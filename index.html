@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2048 Score Tracker (Player Ranking)</title>
+<style>
+  /* Classic 2048 Styling */
+  body {
+    font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+    background-color: #faf8ef;
+    color: #776e65;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .container {
+    background: #bbada0;
+    padding: 30px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 650px;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 48px;
+    margin: 0;
+    color: #776e65;
+  }
+
+  .truth-box {
+    background: #8f7a66;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-align: center;
+  }
+
+  .truth-box .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #eee4da;
+    letter-spacing: 0.5px;
+  }
+
+  .truth-box .value {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 2px;
+  }
+
+  .input-area {
+    background: #eee4da;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    margin-bottom: 15px;
+    background: #faf8ef;
+    color: #776e65;
+    font-weight: bold;
+  }
+
+  input:focus {
+    outline: 2px solid #8f7a66;
+  }
+
+  button {
+    background-color: #8f7a66;
+    color: #f9f6f2;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    transition: background-color 0.2s;
+  }
+
+  button:hover {
+    background-color: #9f8b77;
+  }
+
+  .leaderboard {
+    background: #faf8ef;
+    border-radius: 5px;
+    padding: 20px 15px;
+  }
+
+  h3 {
+    margin-top: 0;
+    text-align: center;
+    font-size: 18px;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  /* --- VISUAL BAR CSS --- */
+  li.viz-li {
+    background: #eee4da;
+    margin-bottom: 15px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    color: #776e65;
+    display: block;
+  }
+
+  .viz-game-number {
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #a39486;
+    border-bottom: 1px solid #dcd1c6;
+    padding-bottom: 5px;
+  }
+
+  .viz-bar-container {
+    position: relative;
+    margin-top: 45px;
+    margin-bottom: 75px;
+    padding: 0 30px;
+  }
+
+  .viz-bar-track {
+    width: 100%;
+    height: 12px;
+    background: linear-gradient(to right, #eaddcf, #edc22e);
+    border-radius: 6px;
+    position: relative;
+  }
+
+  .viz-tick {
+    position: absolute;
+    height: 20px;
+    width: 2px;
+    background: #a39486;
+    top: -4px;
+  }
+
+  .viz-tick-label {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: #776e65;
+    font-weight: normal;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .win-tick {
+    background: #f67c5f;
+    z-index: 5;
+  }
+
+  .win-tick .viz-tick-label {
+    color: #f67c5f;
+    font-weight: bold;
+  }
+
+  .viz-pointer {
+    position: absolute;
+    bottom: 100%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 4px;
+    z-index: 10;
+  }
+
+  .viz-label-bubble {
+    background: #f67c5f;
+    color: #fff;
+    font-size: 12px;
+    padding: 5px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .viz-arrow {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #f67c5f;
+  }
+
+  .viz-detailed-info {
+    text-align: center;
+    font-size: 16px;
+    color: #776e65;
+    margin-top: 10px;
+    font-weight: normal;
+  }
+
+  .viz-performance {
+    text-align: center;
+    font-size: 16px;
+    color: #776e65;
+    margin-top: 4px;
+    font-weight: normal;
+  }
+
+  .highlight-result {
+    color: #f67c5f;
+    font-weight: bold;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: #a39486;
+    font-style: italic;
+    padding: 20px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>2048</h1>
+    <div class="truth-box">
+      <div class="label">Minimum Score to Win</div>
+      <div class="value">18,432</div>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <label for="gameScore">Enter Final Game Score:</label>
+    <input type="number" id="gameScore" placeholder="e.g., 4200" required>
+    <button onclick="submitScore()">Calculate Progress</button>
+  </div>
+
+  <div class="leaderboard">
+    <h3>Performance evaluation based on all players</h3>
+    <ul id="scoreList">
+      <div class="empty-state">No scores added yet.</div>
+    </ul>
+  </div>
+</div>
+
+<script>
+  const WIN_BENCHMARK = 18432;
+  const VIZ_MAX_SCORE = 25000;
+
+  let gameCount = 0;
+
+  function submitScore() {
+    const inputElement = document.getElementById('gameScore');
+    const scoreValue = parseInt(inputElement.value);
+
+    if (isNaN(scoreValue) || scoreValue <= 0) {
+      alert("Please enter a valid score.");
+      return;
+    }
+
+    gameCount++;
+
+    const listElement = document.getElementById('scoreList');
+    if (gameCount === 1) {
+      listElement.innerHTML = '';
+    }
+
+    // Calculate percentage on the progress bar
+    const vizPositionPercentage = Math.min(((scoreValue / VIZ_MAX_SCORE) * 100), 100).toFixed(2);
+
+    // Calculate ranking percentage
+    let topPercentile = (100 * Math.exp(-scoreValue / 4000)).toFixed(2);
+    if (topPercentile <= 0) topPercentile = "0.01";
+
+    // Determine Performance Rank based on the custom score brackets
+    let performanceRank = "";
+
+    if (scoreValue < 2000) {
+      performanceRank = "Very Poor";
+    } else if (scoreValue < 3500) {
+      performanceRank = "Poor";
+    } else if (scoreValue < 7500) {
+      performanceRank = "Average";
+    } else if (scoreValue < 15000) {
+      performanceRank = "Good";
+    } else {
+      performanceRank = "Excellent";
+    }
+
+    const formattedScore = scoreValue.toLocaleString();
+    const listItem = document.createElement('li');
+    listItem.className = "viz-li";
+
+    listItem.innerHTML = `
+      <div class="viz-game-number">Game ${gameCount}</div>
+
+      <div class="viz-bar-container">
+        <div class="viz-bar-track">
+          <div class="viz-tick" style="left: 0%"><span class="viz-tick-label">0</span></div>
+          <div class="viz-tick" style="left: 20%"><span class="viz-tick-label">5k</span></div>
+          <div class="viz-tick" style="left: 40%"><span class="viz-tick-label">10k</span></div>
+          <div class="viz-tick" style="left: 60%"><span class="viz-tick-label">15k</span></div>
+
+          <div class="viz-tick win-tick" style="left: 73.73%">
+            <span class="viz-tick-label" style="transform: translateX(-50%); width: 70px;">18,432<br>(Win)</span>
+          </div>
+
+          <div class="viz-tick" style="left: 80%; height: 26px;">
+            <span class="viz-tick-label" style="transform: translateX(-50%); top: 30px;">20k</span>
+          </div>
+
+          <div class="viz-tick" style="left: 100%">
+            <span class="viz-tick-label" style="right: -5px; left: auto; transform: none; text-align: right; width: 150px;">
+              25k
+              <span style="display: block; font-size: 10px; line-height: 1.2; margin-top: 4px; color: #f67c5f;">
+                Theoretical Highest<br>Score in 2048
+              </span>
+            </span>
+          </div>
+
+          <div class="viz-pointer" style="left: ${vizPositionPercentage}%">
+            <div class="viz-label-bubble">Score: ${formattedScore}</div>
+            <div class="viz-arrow"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="viz-detailed-info">Ranked top <span class="highlight-result">${topPercentile}%</span> among all players</div>
+      <div class="viz-performance">Performance Evaluation: <span class="highlight-result">${performanceRank}</span></div>
+    `;
+
+    listElement.prepend(listItem);
+
+    inputElement.value = '';
+    inputElement.focus();
+  }
+</script>
+
+</body>
+</html>
