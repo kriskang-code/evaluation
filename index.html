@@ -258,7 +258,7 @@
   <div class="header">
     <h1>2048</h1>
     <div class="truth-box">
-      <div class="label">Minimum Score to Win</div>
+      <div class="label">赢得这个游戏最少分数</div>
       <div class="value">18,432</div>
     </div>
   </div>
@@ -270,9 +270,9 @@
   </div>
 
   <div class="leaderboard">
-    <h3>Performance evaluation based on all players</h3>
+    <h3>基于所有玩家的表现评价</h3>
     <ul id="scoreList">
-      <div class="empty-state">No scores added yet.</div>
+      <div class="empty-state">还没有记录</div>
     </ul>
   </div>
 </div>
@@ -347,20 +347,20 @@
             <span class="viz-tick-label" style="right: -5px; left: auto; transform: none; text-align: right; width: 150px;">
               25k
               <span style="display: block; font-size: 10px; line-height: 1.2; margin-top: 4px; color: #f67c5f;">
-                Theoretical Highest<br>Score in 2048
+                理论最高<br>得分在2048
               </span>
             </span>
           </div>
 
           <div class="viz-pointer" style="left: ${vizPositionPercentage}%">
-            <div class="viz-label-bubble">Score: ${formattedScore}</div>
+            <div class="viz-label-bubble">得分: ${formattedScore}</div>
             <div class="viz-arrow"></div>
           </div>
         </div>
       </div>
 
-      <div class="viz-detailed-info">Ranked top <span class="highlight-result">${topPercentile}%</span> among all players</div>
-      <div class="viz-performance">Performance Evaluation: <span class="highlight-result">${performanceRank}</span></div>
+      <div class="viz-detailed-info">位于前 <span class="highlight-result">${topPercentile}%</span> ，基于所有2048玩家</div>
+      <div class="viz-performance">游戏表现评价 <span class="highlight-result">${performanceRank}</span></div>
     `;
 
     listElement.prepend(listItem);
