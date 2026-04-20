@@ -264,9 +264,9 @@
   </div>
 
   <div class="input-area">
-    <label for="gameScore">Enter Final Game Score:</label>
-    <input type="number" id="gameScore" placeholder="e.g., 4200" required>
-    <button onclick="submitScore()">Calculate Your Performance Evaluation Based on All 2048 Players</button>
+    <label for="gameScore">输入您的最终得分:</label>
+    <input type="number" id="gameScore" placeholder="例如, 4200" required>
+    <button onclick="submitScore()">计算您在所以2048玩家中的表现</button>
   </div>
 
   <div class="leaderboard">
@@ -310,15 +310,15 @@
     let performanceRank = "";
 
     if (scoreValue < 2000) {
-      performanceRank = "Very Poor";
+      performanceRank = "非常差";
     } else if (scoreValue < 3500) {
-      performanceRank = "Poor";
+      performanceRank = "很差";
     } else if (scoreValue < 7500) {
-      performanceRank = "Average";
+      performanceRank = "一般";
     } else if (scoreValue < 15000) {
-      performanceRank = "Good";
+      performanceRank = "不错";
     } else {
-      performanceRank = "Excellent";
+      performanceRank = "非常好";
     }
 
     const formattedScore = scoreValue.toLocaleString();
